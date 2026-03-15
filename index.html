@@ -215,7 +215,21 @@ button:hover {
 
   /* Target the first H3 in the second column of the grid */
   .grid div:nth-child(2) h3:first-child {
-    margin-top: 0px; 
+    margin-top: -55px; 
+  }
+}
+  /* ---------- mobile grid ---------- */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 60px; /* From our previous adjustment */
+  }
+
+  /* Adjust H1 line height and size for mobile */
+  h1 {
+    line-height: 1.2;  /* Adjust this value (1.1 to 1.4 is usually best) */
+    font-size: 24px;   /* Optional: scale down the size so it fits better */
+    margin-bottom: 20px;
   }
 }
 </style>
