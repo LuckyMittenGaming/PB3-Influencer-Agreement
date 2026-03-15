@@ -322,42 +322,58 @@ function generateContractID(){
 const contractID = generateContractID()
 document.getElementById("contractID").innerText = contractID
 
-/* SIGNATURE PAD */
-const canvas = document.getElementById("signature-pad")
-const ctx = canvas.getContext("2d")
-let drawing=false
+/* SIGNATURE PAD - Fixed for lifting finger */
+const canvas = document.getElementById("signature-pad");
+const ctx = canvas.getContext("2d");
+let drawing = false;
 
-function resizeCanvas(){
-  canvas.width = canvas.offsetWidth
-  canvas.height = canvas.offsetHeight
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 }
-resizeCanvas()
-window.addEventListener("resize", resizeCanvas)
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-canvas.addEventListener("mousedown", ()=>drawing=true)
-canvas.addEventListener("mouseup", ()=>drawing=false)
-canvas.addEventListener("mousemove", draw)
-canvas.addEventListener("touchstart", ()=>drawing=true)
-canvas.addEventListener("touchend", ()=>drawing=false)
-canvas.addEventListener("touchmove", draw)
-
-function draw(e){
-  if(!drawing) return
-  e.preventDefault()
-  let rect = canvas.getBoundingClientRect()
-  let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left
-  let y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
-  ctx.lineWidth=2
-  ctx.lineCap="round"
-  ctx.strokeStyle="#000"
-  ctx.lineTo(x,y)
-  ctx.stroke()
-  ctx.beginPath()
-  ctx.moveTo(x,y)
+// --- UPDATED LISTENERS ---
+function startDrawing(e) {
+  drawing = true;
+  ctx.beginPath(); // <--- Crucial: Starts a brand new path
+  draw(e);         // Draws the initial dot/starting point
 }
 
-function clearSignature(){
-  ctx.clearRect(0,0,canvas.width,canvas.height)
+function stopDrawing() {
+  drawing = false;
+  ctx.beginPath(); // <--- Resets path so lines don't "ghost" connect
+}
+
+canvas.addEventListener("mousedown", startDrawing);
+canvas.addEventListener("mouseup", stopDrawing);
+canvas.addEventListener("mouseout", stopDrawing); // Stops drawing if mouse leaves canvas
+canvas.addEventListener("mousemove", draw);
+
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault(); // Prevents scrolling while signing
+  startDrawing(e);
+});
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("touchmove", draw);
+
+function draw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  
+  let rect = canvas.getBoundingClientRect();
+  let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  let y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round"; // Makes corners smoother
+  ctx.strokeStyle = "#000";
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  // REMOVED: ctx.beginPath() and ctx.moveTo(x,y) from here
 }
 
 /* SUBMIT FORM */
