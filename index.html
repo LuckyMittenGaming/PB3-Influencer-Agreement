@@ -42,6 +42,7 @@ h1 {
   text-align: center;
   color: #d4af37;
   margin-bottom: 0.5rem;  /* small breathing under main title */
+  line-height: 32px;
 }
 
 /* all headings lose default margins */
@@ -203,6 +204,17 @@ button:hover {
   /* avoid page breaks inside sections */
   .grid, .form-section {
     break-inside: avoid;
+  }
+}
+  @media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 5px; /* keep standard gap */
+  }
+
+  /* Target the first H3 in the second column of the grid */
+  .grid div:nth-child(2) h3:first-child {
+    margin-top: 0px; 
   }
 }
 </style>
